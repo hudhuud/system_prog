@@ -16,7 +16,7 @@ int main(void) {
         marks[marks_count] = ar[i - 1];
     }
 
-    for (size_t j = 0; j < marks_count; ++j) {
+    for (size_t j = 0; j < marks_count; j++) {
         printf("%hd ", marks[j]);
     }
 
