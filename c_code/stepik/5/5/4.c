@@ -15,12 +15,12 @@ int main(void)
 
     int countFives = 0;
 
-    for (size_t i = 0; i < currentCount; ++i) {
+    for (size_t i = 0; i < currentCount; i++) {
         if (numbers[i] == 5) {
             countFives++;
             int newValue = -countFives;
 
-            for (size_t j = currentCount; j > i + 1; --j) {
+            for (size_t j = currentCount; j > i + 1; j--) {
                 numbers[j] = numbers[j - 1];
             }
 
@@ -33,7 +33,7 @@ int main(void)
         }
     }
 
-    for (size_t i = 0; i < currentCount; ++i) {
+    for (size_t i = 0; i < currentCount; i++) {
         printf("%d ", numbers[i]);
     }
     printf("\n");
