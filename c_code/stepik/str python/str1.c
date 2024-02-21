@@ -7,13 +7,15 @@ int main() {
     char str1[100], str2[100];
 
     fgets(str1, sizeof(str1), stdin);
+    str1[strcspn(str1, "\n")] = '\0';
 
     fgets(str2, sizeof(str2), stdin);
-
-    str1[strcspn(str1, "\n")] = '\0';
     str2[strcspn(str2, "\n")] = '\0';
 
-    printf("%s %s", str1, str2);
+    strcat(str1, " "); 
+    strcat(str1, str2);
+
+    printf("%s\n", str1);
 
     return 0;
 }
