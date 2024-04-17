@@ -4,64 +4,66 @@
 
 #define max_len 100
 
-void sort(char **arr, int n) {
-    int i, j;
-    char *mass;
-    
-    for (i = 0; i < n-1; i++) {
-        for (j = 0; j < n-i-1; j++) {
-            if (strcmp(arr[j], arr[j+1]) > 0) {
-                mass = arr[j];
-                arr[j] = arr[j+1];
-                arr[j+1] = mass;
-            }
+void sort(char ***res, int *n, int *siz, char *buf) {
+    //есть ли место в res
+    if (*n >= *siz) {
+        //увеличение вдвое
+        *siz *= 2;
+        *res = realloc(*res, (*siz) * sizeof(char *));
+        if (*res == NULL) {
+            printf("ошибка при выделении памяти 1\n");
+            exit(1);
         }
     }
+
+    //копирование строки
+    (*res)[*n] = strdup(buf);
+    (*n)++;
 }
 
 int main() {
     FILE *file;
-    char **arr;
-    char line[max_len];
-    int n, i;
+    char **res = NULL;
+    char buf[max_len];
+    int n = 0; //строки в res
+    int siz = 1; //начальный размер
+    int i;
+    
+    //для qsort
+    int compare(const void *a, const void *b) {
+    const char *str1 = *(const char **)a;
+    const char *str2 = *(const char **)b;
+    return strcmp(str1, str2);
+    }
+    
+    //выделение памяти для res
+    res = (char **)malloc(siz * sizeof(char *));
+    if (res == NULL) {
+        printf("ошибка при выделении памяти 2\n");
+        return 1;
+    }
 
     file = fopen("in.txt", "r");
     if (file == NULL) {
-        printf("Ошибка при открытии файла.\n");
+        printf("ошибка при открытии\n");
         return 1;
     }
 
-    n = 0;
-    while (fgets(line, max_len, file) != NULL) {
-        n++;
-    }
+    while (fgets(buf, max_len, file) != NULL) {
 
-    fseek(file, 0, SEEK_SET);
-
-    arr = (char **)malloc(n * sizeof(char *));
-    if (arr == NULL) {
-        printf("Ошибка при выделении памяти.\n");
-        return 1;
-    }
-
-    for (i = 0; i < n; i++) {
-        arr[i] = (char *)malloc(max_len * sizeof(char));
-        if (arr[i] == NULL) {
-            printf("Ошибка при выделении памяти.\n");
-            return 1;
-        }
-        fgets(arr[i], max_len, file);
+        buf[strcspn(buf, "\n")] = '\0';
+        sort(&res, &n, &siz, buf);
     }
 
     fclose(file);
 
-    sort(arr, n);
+    qsort(res, n, sizeof(char *), compare);
 
     for (i = 0; i < n; i++) {
-        printf("%s", arr[i]);
-        free(arr[i]);
+        printf("%s\n", res[i]);
+        free(res[i]); //для каждой строки
     }
-    free(arr);
+    free(res); //для массива
 
     return 0;
 }
