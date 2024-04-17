@@ -1,0 +1,57 @@
+на питоне
+
+def get_parent_pid():
+    try:
+        # Открываем файл /proc/self/status для чтения
+        with open("/proc/self/status", "r") as f:
+            # Ищем строку с информацией о родительском PID
+            for line in f:
+                if line.startswith("PPid:"):
+                    # Извлекаем родительский PID и возвращаем его
+                    return int(line.split()[1])
+    except FileNotFoundError:
+        print("Ошибка при открытии файла /proc/self/status")
+        return -1
+
+def main():
+    # Получаем родительский PID
+    parent_pid = get_parent_pid()
+    if parent_pid != -1:
+        # Выводим родительский PID
+        print(parent_pid)
+
+if __name__ == "__main__":
+    main()
+
+на си
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main() {
+    // Открытие файла /proc/self/status для чтения
+    FILE *fp = fopen("/proc/self/status", "r");
+    if (fp == NULL) {
+        fprintf(stderr, "Ошибка при открытии файла /proc/self/status\n");
+        return 1;
+    }
+
+    // Поиск строки с информацией о родительском PID
+    char line[256];
+    int parent_pid = -1;
+    while (fgets(line, sizeof(line), fp)) {
+        if (strncmp(line, "PPid:", 5) == 0) {
+            sscanf(line, "PPid:\t%d", &parent_pid);
+            break;
+        }
+    }
+
+    // Закрытие файла
+    fclose(fp);
+
+    // Вывод родительского PID
+    printf("%d\n", parent_pid);
+
+    return 0;
+}
